@@ -27,6 +27,24 @@ mixin _$AuthStore on _AuthStore, Store {
     });
   }
 
+  late final _$isConfirmVisibleAtom = Atom(
+    name: '_AuthStore.isConfirmVisible',
+    context: context,
+  );
+
+  @override
+  bool get isConfirmVisible {
+    _$isConfirmVisibleAtom.reportRead();
+    return super.isConfirmVisible;
+  }
+
+  @override
+  set isConfirmVisible(bool value) {
+    _$isConfirmVisibleAtom.reportWrite(value, super.isConfirmVisible, () {
+      super.isConfirmVisible = value;
+    });
+  }
+
   late final _$isLoadingAtom = Atom(
     name: '_AuthStore.isLoading',
     context: context,
@@ -63,13 +81,13 @@ mixin _$AuthStore on _AuthStore, Store {
   late final _$userAtom = Atom(name: '_AuthStore.user', context: context);
 
   @override
-  User? get user {
+  BaseResponse<Users>? get user {
     _$userAtom.reportRead();
     return super.user;
   }
 
   @override
-  set user(User? value) {
+  set user(BaseResponse<Users>? value) {
     _$userAtom.reportWrite(value, super.user, () {
       super.user = value;
     });
@@ -81,14 +99,25 @@ mixin _$AuthStore on _AuthStore, Store {
   );
 
   @override
-  Future<bool?> login(LoginRequestModel req) {
-    return _$loginAsyncAction.run(() => super.login(req));
+  Future<dynamic> login(LoginRequestModel request, BuildContext context) {
+    return _$loginAsyncAction.run(() => super.login(request, context));
+  }
+
+  late final _$signUpAsyncAction = AsyncAction(
+    '_AuthStore.signUp',
+    context: context,
+  );
+
+  @override
+  Future<dynamic> signUp(SignUpRequestModel request) {
+    return _$signUpAsyncAction.run(() => super.signUp(request));
   }
 
   @override
   String toString() {
     return '''
 isVisible: ${isVisible},
+isConfirmVisible: ${isConfirmVisible},
 isLoading: ${isLoading},
 error: ${error},
 user: ${user}

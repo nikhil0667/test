@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'package:test_architecture/data/model/request/sign_up_request_model.dart';
 import 'package:test_architecture/data/model/response/users.dart';
 
 import '../../core/api/base_response/base_response.dart';
@@ -13,4 +14,7 @@ abstract class AuthApi {
 
   @POST("/tasks/login")
   Future<BaseResponse<Users>> signIn(@Body() LoginRequestModel request);
+
+  @POST("/tasks/signup")
+  Future<BaseResponse<Users>> signUp(@Body() SignUpRequestModel request);
 }

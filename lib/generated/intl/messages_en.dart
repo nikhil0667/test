@@ -125,7 +125,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "kEnterValidMobileNumber": MessageLookupByLibrary.simpleMessage(
             "Please enter valid mobile number"),
         "kEnterValidPassword": MessageLookupByLibrary.simpleMessage(
-            "Password should be 8 or more characters"),
+            "Password should be 6 or more characters"),
         "kLogoutMsg": MessageLookupByLibrary.simpleMessage(
             "Are you sure \n\nYou want to logout?"),
         "kPleaseEnterOtp":

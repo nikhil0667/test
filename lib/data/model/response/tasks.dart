@@ -1,44 +1,36 @@
 // To parse this JSON data, do
 //
-//     final tasks = tasksFromMap(jsonString);
+//     final tasks = tasksFromJson(jsonString);
 
-import 'dart:convert';
 
-import 'package:json_annotation/json_annotation.dart';
 
-part 'tasks.g.dart';
-
-Tasks tasksFromMap(String str) => Tasks.fromJson(json.decode(str));
-
-String tasksToMap(Tasks data) => json.encode(data.toJson());
-
-@JsonSerializable()
 class Tasks {
-  @JsonKey(name: "type")
   String? type;
-  @JsonKey(name: "tasks")
   List<Task>? tasks;
 
   Tasks({this.type, this.tasks});
 
-  factory Tasks.fromJson(Map<String, dynamic> json) => _$TasksFromJson(json);
+  factory Tasks.fromJson(Map<String, dynamic> json, String type) => Tasks(
+    type: json["type"],
+    tasks: json["tasks"] == null
+        ? []
+        : List<Task>.from(json["tasks"]!.map((x) => Task.fromJson(x, type))),
+  );
 
-  Map<String, dynamic> toJson() => _$TasksToJson(this);
+  Map<String, dynamic> toMap() => {
+    "type": type,
+    "tasks": tasks == null
+        ? []
+        : List<dynamic>.from(tasks!.map((x) => x.toMap())),
+  };
 }
 
-@JsonSerializable()
 class Task {
-  @JsonKey(name: "id")
   int? id;
-  @JsonKey(name: "title")
   String? title;
-  @JsonKey(name: "progress")
   int? progress;
-  @JsonKey(name: "status")
   String? status;
-  @JsonKey(name: "due_date")
   DateTime? dueDate;
-  @JsonKey(name: "team")
   List<String>? team;
 
   Task({
@@ -50,7 +42,26 @@ class Task {
     this.team,
   });
 
-  factory Task.fromJson(Map<String, dynamic> json) => _$TaskFromJson(json);
+  factory Task.fromJson(Map<String, dynamic> json, String type) => Task(
+    id: json["id"],
+    title: json["title"],
+    progress: json["progress"],
+    status: json["status"],
+    dueDate: json[type == "left" ? "due_date" : "completed_at"] == null
+        ? null
+        : DateTime.parse(json[type == "left" ? "due_date" : "completed_at"]),
+    team: json["team"] == null
+        ? []
+        : List<String>.from(json["team"]!.map((x) => x)),
+  );
 
-  Map<String, dynamic> toJson() => _$TaskToJson(this);
+  Map<String, dynamic> toMap() => {
+    "id": id,
+    "title": title,
+    "progress": progress,
+    "status": status,
+    "due_date":
+        "${dueDate!.year.toString().padLeft(4, '0')}-${dueDate!.month.toString().padLeft(2, '0')}-${dueDate!.day.toString().padLeft(2, '0')}",
+    "team": team == null ? [] : List<dynamic>.from(team!.map((x) => x)),
+  };
 }

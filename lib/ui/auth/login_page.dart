@@ -10,8 +10,8 @@ import 'package:test_architecture/util/app_image.dart';
 import 'package:test_architecture/values/colors.dart';
 import 'package:test_architecture/values/validator.dart';
 import 'package:test_architecture/widget/custom_text.dart';
+import 'package:test_architecture/widget/custom_text_button.dart';
 import 'package:test_architecture/widget/custom_text_form_field.dart';
-import 'package:test_architecture/widget/message.dart';
 
 @RoutePage()
 class LoginPage extends StatefulWidget {
@@ -29,17 +29,16 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
-    mobileController = TextEditingController();
-    passwordController = TextEditingController();
+    // mobileController = TextEditingController();
+    // passwordController = TextEditingController();
+    mobileController = TextEditingController(text: "5263417898");
+    passwordController = TextEditingController(text: "secret123");
     _fromKey = GlobalKey();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (locator<AuthStore>().user != null) {
-      context.router.push(HomeRoute());
-    }
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -174,6 +173,21 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
+              Row(
+                children: [
+                  CustomText(
+                    label: "I have an no account? ",
+                    color: Colors.grey,
+                    textDecoration: .none,
+                    fontSize: 20.sp,
+                  ),
+                  CustomTextButton(
+                    label: "Register",
+                    textDecoration: .none,
+                    onPressed: () => context.router.replace(SignUpRoute()),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -182,21 +196,14 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> submit() async {
-    print("Im Call");
     if (_fromKey.currentState!.validate()) {
-      bool? success = await authStore.login(
+      await authStore.login(
         LoginRequestModel(
           phone: "+91 ${mobileController.text.trim()}",
           password: passwordController.text.trim(),
         ),
+        context,
       );
-      print("Daya $success");
-      if (success!) {
-        context.router.push(HomeRoute());
-        Message.showMessage(context, "Login Successfully");
-      } else {
-        Message.showMessage(context, authStore.error);
-      }
     }
   }
 }

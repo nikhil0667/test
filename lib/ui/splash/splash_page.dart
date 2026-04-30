@@ -6,9 +6,18 @@ import 'package:test_architecture/util/app_image.dart';
 import 'package:test_architecture/values/colors.dart';
 import 'package:test_architecture/widget/custom_text.dart';
 
+import '../../core/locator/locator.dart';
+
 @RoutePage()
-class SplashPage extends StatelessWidget {
+class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
+
+  @override
+  State<SplashPage> createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> {
+
 
   @override
   Widget build(BuildContext context) {

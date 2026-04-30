@@ -24,7 +24,7 @@ final MultiValidator passwordValidator = MultiValidator([
 ]);
 final MultiValidator confPasswordValidator = MultiValidator([
   RequiredValidator(errorText: S.current.kConfPassword),
-  MinLengthValidator(8, errorText: S.current.kEnterValidPassword),
+  MinLengthValidator(6, errorText: S.current.kEnterValidPassword),
 ]);
 final MultiValidator newPasswordValidator = MultiValidator([
   RequiredValidator(errorText: S.current.kEnterNewPassword),

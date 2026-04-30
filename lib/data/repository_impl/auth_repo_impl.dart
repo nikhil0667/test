@@ -1,5 +1,4 @@
-import 'package:test_architecture/core/exceptions/dio_exception_util.dart';
-import 'package:test_architecture/ui/auth/store/auth_store.dart';
+import 'package:test_architecture/data/model/request/sign_up_request_model.dart';
 
 import '../../core/api/base_response/base_response.dart';
 import '../../core/locator/locator.dart';
@@ -14,17 +13,15 @@ class AuthRepoImpl extends AuthRepository {
   AuthRepoImpl({required this.authApi});
 
   @override
-  Future<BaseResponse<Users>?> signIn(LoginRequestModel request) async {
-   try{
-      return await authApi.signIn(request);
-    } on DioExceptionUtil catch(e)  {
-      locator<AuthStore>().error = e.toString();
-    } catch (e) {
+  Future<BaseResponse<Users>> signIn(LoginRequestModel request) async {
+    final BaseResponse<Users> res = await authApi.signIn(request);
+    return res;
+  }
 
-     locator<AuthStore>().error = e.toString();
-      rethrow;
-    }
-   return null;
+  @override
+  Future<BaseResponse<Users>> signUp(SignUpRequestModel request) async {
+    final BaseResponse<Users> res = await authApi.signUp(request);
+    return res;
   }
 }
 

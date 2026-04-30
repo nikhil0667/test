@@ -410,10 +410,10 @@ class S {
     );
   }
 
-  /// `Password should be 8 or more characters`
+  /// `Password should be 6 or more characters`
   String get kEnterValidPassword {
     return Intl.message(
-      'Password should be 8 or more characters',
+      'Password should be 6 or more characters',
       name: 'kEnterValidPassword',
       desc: '',
       args: [],

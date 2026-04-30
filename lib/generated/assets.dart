@@ -22,19 +22,28 @@ class $AssetsImageGen {
   final AssetGenImage backgroundImage = const AssetGenImage(
     'assets/image/background_image.jpg',
   );
+  final AssetGenImage cir = const AssetGenImage('assets/image/cir.png');
+  final AssetGenImage email = const AssetGenImage('assets/image/email.png');
   final AssetGenImage gradient = const AssetGenImage(
     'assets/image/gradient.png',
   );
+  final AssetGenImage graph = const AssetGenImage('assets/image/graph.png');
+  final AssetGenImage home = const AssetGenImage('assets/image/home.png');
   final AssetGenImage leftGradient = const AssetGenImage(
     'assets/image/left_gradient.png',
+  );
+  final AssetGenImage notification = const AssetGenImage(
+    'assets/image/notification.png',
   );
   final AssetGenImage password = const AssetGenImage(
     'assets/image/password.png',
   );
+  final AssetGenImage person = const AssetGenImage('assets/image/person.png');
   final AssetGenImage phone = const AssetGenImage('assets/image/phone.png');
   final AssetGenImage rightGradient = const AssetGenImage(
     'assets/image/right_gradient.png',
   );
+  final AssetGenImage setting = const AssetGenImage('assets/image/setting.png');
   final AssetGenImage signInButton = const AssetGenImage(
     'assets/image/sign_in_button.png',
   );

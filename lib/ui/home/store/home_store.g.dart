@@ -45,6 +45,21 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$isLeftAtom = Atom(name: '_HomeStore.isLeft', context: context);
+
+  @override
+  bool get isLeft {
+    _$isLeftAtom.reportRead();
+    return super.isLeft;
+  }
+
+  @override
+  set isLeft(bool value) {
+    _$isLeftAtom.reportWrite(value, super.isLeft, () {
+      super.isLeft = value;
+    });
+  }
+
   late final _$errorAtom = Atom(name: '_HomeStore.error', context: context);
 
   @override
@@ -60,18 +75,18 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
-  late final _$tasksAtom = Atom(name: '_HomeStore.tasks', context: context);
+  late final _$taskAtom = Atom(name: '_HomeStore.task', context: context);
 
   @override
-  Tasks? get tasks {
-    _$tasksAtom.reportRead();
-    return super.tasks;
+  ObservableList<Task>? get task {
+    _$taskAtom.reportRead();
+    return super.task;
   }
 
   @override
-  set tasks(Tasks? value) {
-    _$tasksAtom.reportWrite(value, super.tasks, () {
-      super.tasks = value;
+  set task(ObservableList<Task>? value) {
+    _$taskAtom.reportWrite(value, super.task, () {
+      super.task = value;
     });
   }
 
@@ -81,7 +96,7 @@ mixin _$HomeStore on _HomeStore, Store {
   );
 
   @override
-  Future<void> getTasksList({String? name}) {
+  Future<dynamic> getTasksList({String? name}) {
     return _$getTasksListAsyncAction.run(() => super.getTasksList(name: name));
   }
 
@@ -90,8 +105,9 @@ mixin _$HomeStore on _HomeStore, Store {
     return '''
 isVisible: ${isVisible},
 isLoading: ${isLoading},
+isLeft: ${isLeft},
 error: ${error},
-tasks: ${tasks}
+task: ${task}
     ''';
   }
 }

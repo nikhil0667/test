@@ -39,7 +39,7 @@
   "kEnterLastName": "Please enter last name",
   "kEnterValidLastName": "Please enter at least 3 characters for last name",
   "kEnterPassword": "Please enter password",
-  "kEnterValidPassword": "Password should be 8 or more characters",
+  "kEnterValidPassword": "Password should be 6 or more characters",
   "kEnterNewPassword": "Please enter new password",
   "kPleaseEnterOtp": "Please enter OTP",
   "kPleaseEnterValidOtp": "Please enter valid OTP",

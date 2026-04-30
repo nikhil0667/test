@@ -40,7 +40,7 @@ class _TaskApi implements TaskApi {
     try {
       _value = BaseResponse<Tasks>.fromJson(
         _result.data!,
-        (json) => Tasks.fromJson(json as Map<String, dynamic>),
+        (json) => Tasks.fromJson(json as Map<String, dynamic>,type),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);

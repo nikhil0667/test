@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hive_ce_flutter/adapters.dart';
-import 'package:test_architecture/core/db/hive_service.dart';
 import 'package:test_architecture/router/app_router.dart';
 
 import 'core/locator/locator.dart';
@@ -11,9 +9,7 @@ import 'generated/l10n.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
 
-  HiveService.openBox();
   await setupLocator();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -31,7 +27,6 @@ class MyApp extends StatelessWidget {
       designSize: Size(436.4, 972.9),
       builder: (context, child) {
         return MaterialApp.router(
-
           debugShowCheckedModeBanner: false,
           title: 'Flutter Demo',
           theme: ThemeData(
