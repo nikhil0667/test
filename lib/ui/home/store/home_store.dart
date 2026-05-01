@@ -25,16 +25,19 @@ abstract class _HomeStore with Store {
   String error = "";
   @observable
   ObservableList<Task>? task = ObservableList();
+  @observable
+  ObservableList<Task>? selectedTask = ObservableList();
 
   @action
-  Future getTasksList({String? name}) async {
+  Future getTasksList(String name) async {
     try {
       error = "";
       isLoading = true;
-      BaseResponse<Tasks> response = await taskApi.getTaskList(name ?? "left");
+      BaseResponse<Tasks> response = await taskApi.getTaskList(name);
 
       if (response.code == "200") {
         task = ObservableList.of(response.data?.tasks as Iterable<Task>);
+        selectedTask = task;
       }
     } on DioException catch (e) {
       error = DioExceptionUtil.handleError(e);
@@ -43,5 +46,20 @@ abstract class _HomeStore with Store {
     } finally {
       isLoading = false;
     }
+  }
+
+  @action
+  void getSelectedTasksList(DateTime date) {
+    isLoading = true;
+
+    selectedTask = ObservableList.of(
+      task!.where((e) {
+        return e.dueDate?.day == date.day &&
+            e.dueDate?.month == date.month &&
+            e.dueDate?.year == date.year;
+      }).toList(),
+    );
+
+    isLoading = false;
   }
 }

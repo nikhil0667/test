@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:test_architecture/core/locator/locator.dart';
-import 'package:test_architecture/data/model/response/users.dart';
+import 'package:test_architecture/data/model/response/calender_model.dart';
 import 'package:test_architecture/router/app_router.dart';
 import 'package:test_architecture/ui/auth/store/auth_store.dart';
 import 'package:test_architecture/ui/home/store/home_store.dart';
@@ -14,7 +14,9 @@ import 'package:test_architecture/values/colors.dart';
 import 'package:test_architecture/values/extensions/string_ext.dart';
 import 'package:test_architecture/widget/custom_text.dart';
 
+import '../../widget/custom_error_widget.dart';
 import '../../widget/custom_tab_bar.dart';
+import '../../widget/profile_section.dart';
 
 @RoutePage()
 class HomePage extends StatefulWidget {
@@ -27,21 +29,21 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final homeStore = locator<HomeStore>();
   final authStore = locator<AuthStore>();
+  DateTime? selectedDate;
+  int index = 0;
+  List<CalenderModel> monthDays = [];
 
   @override
   void initState() {
-    homeStore.getTasksList();
+    homeStore.getTasksList(homeStore.isLeft ? "left" : "done");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final User? user =
-    //     authStore.user.data?.user
-    final User user = User(id: 1, mobile: "None", name: "Dummy");
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      // floatingActionButton: floatingActioRound(),
+
       floatingActionButton: floatingActioRoundBig(),
       bottomNavigationBar: bottomNavigationBar(),
       backgroundColor: AppColor.black,
@@ -50,43 +52,8 @@ class _HomePageState extends State<HomePage> {
           return Column(
             children: [
               40.verticalSpace,
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8.0,
-                  horizontal: 15,
-                ),
-                child: ListTile(
-                  trailing: Container(
-                    width: 55,
-                    height: 100,
-                    padding: .all(10),
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1, color: AppColor.grey),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Icon(Icons.email_rounded, color: Colors.white),
-                  ),
-                  leading: CircleAvatar(
-                    foregroundImage: NetworkImage(
-                      user?.avatar ??
-                          "https://randomuser.me/api/portraits/men/32.jpg",
-                    ),
-                  ),
-                  title: CustomText(
-                    textAlign: .start,
-                    label: "Welcome ${user?.name ?? ""}!",
-                    color: Colors.white,
-                    fontSize: 18.sp,
-                  ),
-                  subtitle: CustomText(
-                    textAlign: .start,
-                    label: "Explore Tasks",
-                    color: Colors.white,
-                    fontSize: 18.sp,
-                    fontWeight: .w700,
-                  ),
-                ),
-              ),
+
+              ProfileSection(),
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20.0,
@@ -109,33 +76,37 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.white,
                       fontSize: 20.sp,
                     ),
-                    roundedContainer(
-                      padding: EdgeInsets.all(10),
-                      color: Colors.white,
-                      child: Row(
-                        spacing: 5,
-                        children: [
-                          Icon(Icons.calendar_month),
-                          InkWell(
-                            onTap: () {
-                              _openCalender(context);
-                            },
-                            child: CustomText(
-                              label: "Mar 22",
+                    InkWell(
+                      onTap: () {
+                        _openCalender(context);
+                      },
+                      child: roundedContainer(
+                        padding: EdgeInsets.all(10),
+                        color: Colors.white,
+                        child: Row(
+                          spacing: 5,
+                          children: [
+                            Icon(Icons.calendar_month),
+
+                            CustomText(
+                              label: DateFormat(
+                                "MMM dd",
+                              ).format(selectedDate ?? DateTime.now()),
                               color: Colors.black,
                               fontSize: 15.sp,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
+
               Expanded(
                 child: roundedContainer(
                   padding: EdgeInsets.all(20),
-                  width: double.infinity,
+                  width: MediaQuery.of(context).size.width,
                   color: Colors.white,
                   radius: BorderRadius.only(
                     topLeft: Radius.circular(50),
@@ -161,6 +132,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
+
                           CustomTabBar(),
                         ],
                       ),
@@ -176,112 +148,129 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _openCalender(BuildContext context) {
-    showDatePicker(
+  void _openCalender(BuildContext context) async {
+    selectedDate = (await showDatePicker(
       context: context,
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
-      onDatePickerModeChange: (value) =>,
-    );
+    ))!;
+    homeStore.getSelectedTasksList(selectedDate!);
   }
 
-
-
-
-
   Widget _listTask() {
+    if (homeStore.error.isNotEmpty) {
+      return CustomErrorWidget(store: homeStore);
+    }
+
     if (homeStore.isLoading) {
       return Expanded(
         child: Center(child: CircularProgressIndicator(color: Colors.red)),
       );
     }
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: homeStore.task?.length,
-      itemBuilder: (context, index) {
-        var task = homeStore.task?[index];
-        Color barColor = Colors.blue;
 
-        if (task?.status == "in_progress") {
-          barColor = Color(0xffFFC83F);
-        } else if (task?.status == "over_due") {
-          barColor = Color(0xffFF6B6B);
-        } else if (task?.status == "completed") {
-          barColor = Color(0xff76EF83);
-        }
+    if (homeStore.selectedTask!.isNotEmpty) {
+      return ListView.builder(
+        shrinkWrap: true,
+        itemCount: homeStore.selectedTask?.length,
+        itemBuilder: (context, index) {
+          var task = homeStore.selectedTask?[index];
+          Color barColor = Colors.blue;
 
-        return ListTile(
-          leading: _loadingIndicator(
-            task!.progress!,
-            lineColor: Colors.white,
-            lineWidth: 5,
-            radius: 25,
-            fontSize: 13.sp,
-            color: Colors.black,
-            fontWeight: .w400,
-            status: task.status,
-          ),
-          title: CustomText(
-            textAlign: .start,
-            label: task.title!,
-            color: Colors.black,
-            fontSize: 18.sp,
-            fontWeight: .bold,
-          ),
-          subtitle: Row(
-            spacing: 10,
-            children: [
-              Icon(Icons.circle, color: barColor, size: 14),
-              Expanded(
-                child: CustomText(
-                  maxLines: 1,
-                  label: "${task.status!.replaceAll("_", " ").toPascalCase()}",
-                  color: barColor,
-                  fontSize: 16.sp,
-                ),
-              ),
-              Expanded(
-                child: CustomText(
-                  maxLines: 1,
+          if (task?.status == "in_progress") {
+            barColor = Color(0xffFFC83F);
+          } else if (task?.status == "over_due") {
+            barColor = Color(0xffFF6B6B);
+          } else if (task?.status == "completed") {
+            barColor = Color(0xff76EF83);
+          }
 
-                  label: DateFormat("MMM dd, yyyy").format(task.dueDate!),
-                  color: Colors.black,
-                  fontSize: 16.sp,
-                ),
-              ),
-            ],
-          ),
-          trailing: SizedBox(
-            width: 100,
-            child: Stack(
-              children: List.generate(
-                  growable: true, task.team!.length, (index,) {
-                return Positioned(
-                  left: index * 20,
-                  child: Container(
-                    margin: EdgeInsets.only(left: 10),
-                    width: 40,
-                    height: 40,
-                    clipBehavior: .hardEdge,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.white, width: 5),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: .circular(100),
-                      child: Image.network(task.team![index], fit: BoxFit.fill),
-                    ),
-                  ),
-                );
-              }),
+          return ListTile(
+            leading: _loadingIndicator(
+              task!.progress!,
+              lineColor: Colors.white,
+              lineWidth: 5,
+              radius: 25,
+              fontSize: 13.sp,
+              color: Colors.black,
+              fontWeight: .w400,
+              status: task.status,
             ),
-          ),
-        );
-      },
+            title: CustomText(
+              textAlign: .start,
+              label: task.title!,
+              color: Colors.black,
+              fontSize: 18.sp,
+              fontWeight: .bold,
+            ),
+            subtitle: Row(
+              spacing: 10,
+              children: [
+                Icon(Icons.circle, color: barColor, size: 14),
+                Expanded(
+                  child: CustomText(
+                    maxLines: 1,
+                    label:
+                        "${task.status!.replaceAll("_", " ").toPascalCase()}",
+                    color: barColor,
+                    fontSize: 16.sp,
+                  ),
+                ),
+                Expanded(
+                  child: CustomText(
+                    maxLines: 1,
+
+                    label: DateFormat("MMM dd, yyyy").format(task.dueDate!),
+                    color: Colors.black,
+                    fontSize: 16.sp,
+                  ),
+                ),
+              ],
+            ),
+            trailing: SizedBox(
+              width: 100,
+              child: Stack(
+                children: List.generate(growable: true, task.team!.length, (
+                  index,
+                ) {
+                  return Positioned(
+                    left: index * 20,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 10),
+                      width: 40,
+                      height: 40,
+                      clipBehavior: .hardEdge,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white, width: 5),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: .circular(100),
+                        child: Image.network(
+                          task.team![index],
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          );
+        },
+      );
+    }
+
+    return Center(
+      child: CustomText(
+        label: "No Found Tasks",
+        color: AppColor.grey,
+        fontSize: 15.sp,
+      ),
     );
   }
 
-  Widget _loadingIndicator(int progress, {
+  Widget _loadingIndicator(
+    int progress, {
     double? radius,
     FontWeight? fontWeight,
     double? lineWidth,
@@ -372,9 +361,11 @@ class _HomePageState extends State<HomePage> {
   }) {
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          context.router.push(ChatRoute());
-        },
+        onTap: index == 2
+            ? () {}
+            : () {
+                context.router.push(ChatRoute());
+              },
         child: Container(
           color: Colors.transparent,
           child: Image.asset(
@@ -393,7 +384,6 @@ class _HomePageState extends State<HomePage> {
       child: Container(
         padding: const EdgeInsetsGeometry.all(20),
         decoration: BoxDecoration(
-          color: const Color(0xff0c48a1),
           borderRadius: BorderRadiusGeometry.circular(50),
           image: DecorationImage(
             fit: BoxFit.fill,

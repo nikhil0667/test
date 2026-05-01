@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:test_architecture/data/model/response/chat.dart';
-import 'package:test_architecture/data/model/response/tasks.dart';
 
 import '../../core/api/base_response/base_response.dart';
 

@@ -81,13 +81,13 @@ mixin _$AuthStore on _AuthStore, Store {
   late final _$userAtom = Atom(name: '_AuthStore.user', context: context);
 
   @override
-  BaseResponse<Users>? get user {
+  BaseResponse<User>? get user {
     _$userAtom.reportRead();
     return super.user;
   }
 
   @override
-  set user(BaseResponse<Users>? value) {
+  set user(BaseResponse<User>? value) {
     _$userAtom.reportWrite(value, super.user, () {
       super.user = value;
     });
@@ -109,8 +109,18 @@ mixin _$AuthStore on _AuthStore, Store {
   );
 
   @override
-  Future<dynamic> signUp(SignUpRequestModel request) {
-    return _$signUpAsyncAction.run(() => super.signUp(request));
+  Future<dynamic> signUp(SignUpRequestModel request, BuildContext context) {
+    return _$signUpAsyncAction.run(() => super.signUp(request, context));
+  }
+
+  late final _$logoutAsyncAction = AsyncAction(
+    '_AuthStore.logout',
+    context: context,
+  );
+
+  @override
+  Future<dynamic> logout(UserLogout request, BuildContext context) {
+    return _$logoutAsyncAction.run(() => super.logout(request, context));
   }
 
   @override

@@ -5,12 +5,12 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:test_architecture/data/model/response/chat.dart';
 import 'package:test_architecture/ui/chat/store/chat_store.dart';
+import 'package:test_architecture/widget/profile_section.dart';
 
 import '../../core/locator/locator.dart';
-import '../../data/model/response/users.dart';
+import '../../data/model/response/user.dart';
 import '../../util/app_image.dart';
 import '../../values/colors.dart';
-import '../../widget/custom_text.dart';
 import '../auth/store/auth_store.dart';
 
 @RoutePage()
@@ -33,15 +33,13 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final User? user =
-    //     authStore.user.data?.user
-    final User user = User(id: 1, mobile: "None", name: "Dummy");
+    final User? user = authStore.user?.data;
     return Scaffold(
       backgroundColor: AppColor.white,
       body: Observer(
         builder: (context) {
           return Column(
-            children: [40.verticalSpace, _onlineMember(user), _recentChat()],
+            children: [40.verticalSpace, _onlineMember(user!), _recentChat()],
           );
         },
       ),
@@ -94,14 +92,23 @@ class _ChatPageState extends State<ChatPage> {
                         color: Colors.white,
                       ),
                     ),
-                    subtitle: Text(
-                      chat.lastMessage!,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
+                    subtitle: Row(
+                      spacing: 5,
+                      children: [
+                        Icon(Icons.done, color: Colors.green, size: 20),
+                        //Api seen not send to default set green Color
+                        Expanded(
+                          child: Text(
+                            chat.lastMessage!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     trailing: Column(
                       spacing: 5,
@@ -240,40 +247,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget _onlineMember(User user) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
-          child: ListTile(
-            trailing: Container(
-              width: 55,
-              height: 100,
-              padding: .all(10),
-              decoration: BoxDecoration(
-                border: Border.all(width: 1, color: AppColor.grey),
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: Icon(Icons.email_rounded, color: Colors.black),
-            ),
-            leading: CircleAvatar(
-              foregroundImage: NetworkImage(
-                user?.avatar ??
-                    "https://randomuser.me/api/portraits/men/32.jpg",
-              ),
-            ),
-            title: CustomText(
-              textAlign: .start,
-              label: "Welcome ${user?.name ?? ""}!",
-              color: Colors.black,
-              fontSize: 18.sp,
-            ),
-            subtitle: CustomText(
-              textAlign: .start,
-              label: "Explore Tasks",
-              color: Colors.black,
-              fontSize: 18.sp,
-              fontWeight: .w700,
-            ),
-          ),
-        ),
+        ProfileSection(),
 
         SizedBox(height: 150, child: _horizontalList()),
       ],

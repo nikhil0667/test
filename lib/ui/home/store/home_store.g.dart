@@ -90,14 +90,49 @@ mixin _$HomeStore on _HomeStore, Store {
     });
   }
 
+  late final _$selectedTaskAtom = Atom(
+    name: '_HomeStore.selectedTask',
+    context: context,
+  );
+
+  @override
+  ObservableList<Task>? get selectedTask {
+    _$selectedTaskAtom.reportRead();
+    return super.selectedTask;
+  }
+
+  @override
+  set selectedTask(ObservableList<Task>? value) {
+    _$selectedTaskAtom.reportWrite(value, super.selectedTask, () {
+      super.selectedTask = value;
+    });
+  }
+
   late final _$getTasksListAsyncAction = AsyncAction(
     '_HomeStore.getTasksList',
     context: context,
   );
 
   @override
-  Future<dynamic> getTasksList({String? name}) {
-    return _$getTasksListAsyncAction.run(() => super.getTasksList(name: name));
+  Future<dynamic> getTasksList(String name) {
+    return _$getTasksListAsyncAction.run(() => super.getTasksList(name));
+  }
+
+  late final _$_HomeStoreActionController = ActionController(
+    name: '_HomeStore',
+    context: context,
+  );
+
+  @override
+  void getSelectedTasksList(DateTime date) {
+    final _$actionInfo = _$_HomeStoreActionController.startAction(
+      name: '_HomeStore.getSelectedTasksList',
+    );
+    try {
+      return super.getSelectedTasksList(date);
+    } finally {
+      _$_HomeStoreActionController.endAction(_$actionInfo);
+    }
   }
 
   @override
@@ -107,7 +142,8 @@ isVisible: ${isVisible},
 isLoading: ${isLoading},
 isLeft: ${isLeft},
 error: ${error},
-task: ${task}
+task: ${task},
+selectedTask: ${selectedTask}
     ''';
   }
 }

@@ -195,10 +195,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-
-
-
-
   Future<void> submit() async {
     if (_fromKey.currentState!.validate()) {
       await authStore.login(

@@ -28,11 +28,11 @@ class _TaskApi implements TaskApi {
     final _options = _setStreamType<BaseResponse<Tasks>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
-            _dio.options,
-            '/tasks/list?type=${type}',
-            queryParameters: queryParameters,
-            data: _data,
-          )
+        _dio.options,
+        '/tasks/list?type=${type}',
+        queryParameters: queryParameters,
+        data: _data,
+      )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
@@ -40,7 +40,7 @@ class _TaskApi implements TaskApi {
     try {
       _value = BaseResponse<Tasks>.fromJson(
         _result.data!,
-        (json) => Tasks.fromJson(json as Map<String, dynamic>,type),
+            (json) => Tasks.fromJson(json as Map<String, dynamic>, type),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
@@ -63,7 +63,9 @@ class _TaskApi implements TaskApi {
   }
 
   String _combineBaseUrls(String dioBaseUrl, String? baseUrl) {
-    if (baseUrl == null || baseUrl.trim().isEmpty) {
+    if (baseUrl == null || baseUrl
+        .trim()
+        .isEmpty) {
       return dioBaseUrl;
     }
 

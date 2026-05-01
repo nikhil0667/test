@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:test_architecture/core/locator/locator.dart';
 import 'package:test_architecture/router/app_router.dart';
+import 'package:test_architecture/ui/auth/store/auth_store.dart';
 import 'package:test_architecture/util/app_image.dart';
 import 'package:test_architecture/values/colors.dart';
 import 'package:test_architecture/widget/custom_text.dart';
-
-import '../../core/locator/locator.dart';
 
 @RoutePage()
 class SplashPage extends StatefulWidget {
@@ -17,7 +17,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-
+  final authStore = locator<AuthStore>();
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +82,7 @@ class _SplashPageState extends State<SplashPage> {
           bottom: 100,
           left: 30,
           child: SizedBox(
-            width: 300,
+            width: 30.sw,
             child: CustomText(
               textAlign: .left,
               label: "Create Your Tasks And Manage Your Work ",
@@ -123,7 +123,11 @@ class _SplashPageState extends State<SplashPage> {
                       },
                     ),
                     onPressed: () {
-                      context.router.push(LoginRoute());
+                      if (authStore.user?.data == null) {
+                        context.router.push(LoginRoute());
+                      } else {
+                        context.router.push(HomeRoute());
+                      }
                     },
                     child: Container(),
                   ),
@@ -142,9 +146,7 @@ class _SplashPageState extends State<SplashPage> {
     Widget? child,
     Color? color,
   }) {
-    return
-
-      Container(
+    return Container(
       width: width,
       height: height,
       clipBehavior: Clip.hardEdge,

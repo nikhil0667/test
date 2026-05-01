@@ -30,7 +30,7 @@ extension NumX on double {
     );
   }
 
-  Widget dividerV({color = Colors.grey}) {
+  Widget dividerV({Color color = Colors.grey}) {
     return Container(
       height: this.toDouble(),
       color: color,
@@ -52,7 +52,7 @@ extension NumX on double {
 
   Widget get VBox {
     return SizedBox(
-      height: this.toDouble(),
+      height: toDouble(),
     );
   }
 

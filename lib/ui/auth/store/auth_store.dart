@@ -5,7 +5,8 @@ import 'package:mobx/mobx.dart';
 import 'package:test_architecture/core/exceptions/dio_exception_util.dart';
 import 'package:test_architecture/data/model/request/login_request_model.dart';
 import 'package:test_architecture/data/model/request/sign_up_request_model.dart';
-import 'package:test_architecture/data/model/response/users.dart';
+import 'package:test_architecture/data/model/request/user_logout.dart';
+import 'package:test_architecture/data/model/response/user.dart';
 
 import '../../../core/api/base_response/base_response.dart';
 import '../../../data/repository_impl/auth_repo_impl.dart';
@@ -29,21 +30,16 @@ abstract class _AuthStore with Store {
   @observable
   String error = "";
   @observable
-  BaseResponse<Users>? user;
+  BaseResponse<User>? user;
 
   @action
   Future login(LoginRequestModel request, BuildContext context) async {
     try {
-      BaseResponse<Users> response = await authRepo.signIn(request);
+      BaseResponse<User> response = await authRepo.signIn(request);
       error = "";
       isLoading = true;
-      print("I MAGE ${response.message}");
-      print("I MAGE ${response.data?.user}");
 
       if (response.code == "200") {
-        print("I MAGE ${response.data}");
-        print("I MAGE ${response.code}");
-
         user = response;
 
         context.router.push(HomeRoute());
@@ -61,20 +57,51 @@ abstract class _AuthStore with Store {
   }
 
   @action
-  Future signUp(SignUpRequestModel request) async {
+  Future signUp(SignUpRequestModel request, BuildContext context) async {
     try {
       BaseResponse response = await authRepo.signUp(request);
       error = "";
       isLoading = true;
-      print("I MAGE ${response.message}");
 
-      print("I MAGE ${response.data}");
-      print("I MAGE ${response.code}");
       if (response.code == "200") {
-        user = response as BaseResponse<Users>?;
+        user = response as BaseResponse<User>?;
+
+        context.router.push(LoginRoute());
+        Message.showMessage(
+          context,
+          response.message ?? "Register Successfully",
+        );
+      } else {
+        Message.showMessage(context, error);
       }
+      if (response.code == "200") {}
     } on DioException catch (e) {
       error = DioExceptionUtil.handleError(e);
+    } catch (e) {
+      error = e.toString();
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  @action
+  Future logout(UserLogout request, BuildContext context) async {
+    try {
+      BaseResponse response = await authRepo.logout(request);
+      error = "";
+      isLoading = true;
+
+      if (response.code == "200") {
+        user = null;
+        context.router.push(LoginRoute());
+        Message.showMessage(context, response.message ?? "Logout Successfully");
+      } else {
+        Message.showMessage(context, error);
+      }
+      if (response.code == "200") {}
+    } on DioException catch (e) {
+      error = DioExceptionUtil.handleError(e);
+      Message.showMessage(context, error);
     } catch (e) {
       error = e.toString();
     } finally {

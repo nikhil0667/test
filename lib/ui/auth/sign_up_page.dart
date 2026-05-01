@@ -35,16 +35,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   void initState() {
-    // fullNameController = TextEditingController();
-    // emailController = TextEditingController();
-    // mobileController = TextEditingController();
-    // passwordController = TextEditingController();
-    // confirmPasswordController = TextEditingController();
-    fullNameController = TextEditingController(text: 'Jamie Wilson');
-    emailController = TextEditingController(text: "jamie@example.com");
-    mobileController = TextEditingController(text: "5263417898");
-    passwordController = TextEditingController(text: "secret123");
-    confirmPasswordController = TextEditingController(text: "secret123");
+    fullNameController = TextEditingController();
+    emailController = TextEditingController();
+    mobileController = TextEditingController();
+    passwordController = TextEditingController();
+    confirmPasswordController = TextEditingController();
     _fromKey = GlobalKey();
     super.initState();
   }
@@ -99,7 +94,7 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 SizedBox(
                   height: 60,
-                  width: 7,
+                  width: 7.sw,
                   child: ColoredBox(color: Colors.black),
                 ),
                 CustomText(
@@ -107,7 +102,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   label: "Create Account",
                   fontWeight: .w600,
                   color: Colors.black,
-                  fontSize: 20.sp,
+                  fontSize: 20.spMin,
                 ),
               ],
             ),
@@ -134,7 +129,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   CustomText(
                     label: "Full Name",
                     color: AppColor.grey,
-                    fontSize: 16.sp,
+                    fontSize: 16.spMin.sp,
                     fontWeight: .w400,
                   ),
                   CustomTextFormField(
@@ -149,7 +144,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   CustomText(
                     label: "Email",
                     color: AppColor.grey,
-                    fontSize: 16.sp,
+                    fontSize: 16.spMin.sp,
                     fontWeight: .w400,
                   ),
                   CustomTextFormField(
@@ -166,7 +161,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   CustomText(
                     label: "Mobile",
                     color: AppColor.grey,
-                    fontSize: 16.sp,
+                    fontSize: 16.spMin.sp,
                     fontWeight: .w400,
                   ),
                   CustomTextFormField(
@@ -181,7 +176,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   CustomText(
                     label: "Password",
                     color: AppColor.grey,
-                    fontSize: 16.sp,
+                    fontSize: 16.spMin.sp,
                     fontWeight: .w400,
                   ),
                   CustomTextFormField(
@@ -208,7 +203,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   CustomText(
                     label: "Confirm Password",
                     color: AppColor.grey,
-                    fontSize: 16.sp,
+                    fontSize: 16.spMin.sp,
                     fontWeight: .w400,
                   ),
                   CustomTextFormField(
@@ -244,7 +239,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           text: TextSpan(
                             text: 'By continuing, you agree to the ',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 14.spMin,
                               color: Color(0xff49657B),
                             ),
                             children: <TextSpan>[
@@ -252,14 +247,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                 text: 'Terms of Service ',
                                 style: TextStyle(
                                   fontWeight: .w500,
-                                  fontSize: 14,
+                                  fontSize: 14.spMin,
                                   color: Colors.black,
                                 ),
                               ),
                               TextSpan(
                                 text: 'and ',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 14.spMin,
                                   color: Color(0xff49657B),
                                 ),
                               ),
@@ -268,7 +263,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: .w500,
-                                  fontSize: 14,
+                                  fontSize: 14.spMin,
                                 ),
                               ),
                             ],
@@ -286,7 +281,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         label: "Already have an account? ",
                         color: Colors.grey,
                         textDecoration: .none,
-                        fontSize: 20.sp,
+                        fontSize: 20.spMin,
                       ),
                       CustomTextButton(
                         textDecoration: .none,
@@ -337,7 +332,7 @@ class _SignUpPageState extends State<SignUpPage> {
           textAlign: .center,
           label: authStore.isLoading ? "Please Wait" : "Signup  ",
           color: Colors.black,
-          fontSize: 18.sp,
+          fontSize: 18.spMin,
           fontWeight: .w700,
         ),
       ),
@@ -346,7 +341,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Widget _customCheckbox() {
     return Container(
-      width: 30,
+      width: 30.sw,
       height: 30,
       alignment: Alignment.center,
       decoration: const BoxDecoration(
@@ -387,19 +382,8 @@ class _SignUpPageState extends State<SignUpPage> {
           phone: "+91 ${mobileController.text.trim()}",
           password: passwordController.text.trim(),
         ),
+        context,
       );
-      print("USER CODE = ${authStore.user}");
-      print("USER MEass = ${authStore.user?.message!}");
-
-      if (authStore.user?.code == "200") {
-        context.router.push(HomeRoute());
-        Message.showMessage(
-          context,
-          authStore.user?.message ?? "User Register Successfully",
-        );
-      } else {
-        Message.showMessage(context, authStore.error);
-      }
     }
   }
 }

@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -14,11 +14,13 @@ class CustomTabBar extends StatefulWidget {
 }
 
 class _CustomTabBarState extends State<CustomTabBar> {
-
   final homeStore = locator<HomeStore>();
+
   @override
   Widget build(BuildContext context) {
-
+    if (kDebugMode) {
+      print("IS LIKE ${homeStore.isLeft}");
+    }
     double height = 60;
     double width = 180;
     return roundedContainer(
@@ -28,10 +30,10 @@ class _CustomTabBarState extends State<CustomTabBar> {
       child: Row(
         children: [
           InkWell(
-            onTap: () => setState(() {
-              homeStore.getTasksList();
+            onTap: () {
+              homeStore.getTasksList(!homeStore.isLeft ? "left" : "done");
               homeStore.isLeft = !homeStore.isLeft;
-            }),
+            },
             child: Padding(
               padding: const EdgeInsets.only(left: 10.0),
               child: Center(
@@ -39,11 +41,11 @@ class _CustomTabBarState extends State<CustomTabBar> {
                   width: (width / 2) - 10,
 
                   height: height - 10,
-                  color: homeStore.isLeft ? Colors.black : Colors.white,
+                  color: !homeStore.isLeft ? Colors.black : Colors.white,
                   child: Center(
                     child: CustomText(
                       label: "Left",
-                      color: !homeStore.isLeft ? Colors.black : Colors.white,
+                      color: homeStore.isLeft ? Colors.black : Colors.white,
                       fontSize: 20.sp,
                     ),
                   ),
@@ -52,20 +54,20 @@ class _CustomTabBarState extends State<CustomTabBar> {
             ),
           ),
           InkWell(
-            onTap: () => setState(() {
-              homeStore.getTasksList(name: "done");
+            onTap: () {
+              homeStore.getTasksList(!homeStore.isLeft ? "left" : "done");
               homeStore.isLeft = !homeStore.isLeft;
-            }),
+            },
             child: Center(
               child: roundedContainer(
                 width: (width / 2) - 10,
 
                 height: height - 10,
-                color: !homeStore.isLeft ? Colors.black : Colors.white,
+                color: homeStore.isLeft ? Colors.black : Colors.white,
                 child: Center(
                   child: CustomText(
                     label: "Done",
-                    color: homeStore.isLeft ? Colors.black : Colors.white,
+                    color: !homeStore.isLeft ? Colors.black : Colors.white,
                     fontSize: 20.sp,
                   ),
                 ),

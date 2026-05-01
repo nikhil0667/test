@@ -46,6 +46,8 @@ dependencies:
   gradient_progress_bar: ^1.0.7
   percent_indicator: ^4.2.5
   dotted_border: ^3.1.0
+  shared_preferences: ^2.5.5
+  flutter_customizable_calendar: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
